@@ -343,7 +343,7 @@ const timelineEventsByStage: Record<string, TimelineEvent[]> = {
       actor: 'System',
       status: 'CLAIM_PACKAGE_APPROVED_AND_PAID',
       details: 'Payment of ₹85,000 processed successfully via NEFT. Transaction reference: NEFT/2025/02/24/TXN1234567. Hospital account credited.',
-      icon: 'CreditCard',
+      icon: 'CheckCircle',
       iconColor: 'green',
       payment: {
         amount: '₹85,000',
@@ -380,19 +380,25 @@ const procedures: Procedure[] = [
 // Define claim stages
 const claimStages = [
   {
-    id: 'pre-auth-preprocessing',
-    name: 'Pre-auth Preprocessing by Eyther',
+    id: 'payment',
+    name: 'Payment Stage',
     icon: CheckCircle,
     color: 'green',
-    description: 'Initial verification and processing by Eyther',
-    isEyther: true
+    description: 'Payment processing and completion'
   },
   {
-    id: 'pre-auth',
-    name: 'Pre-auth',
+    id: 'discharge-l2',
+    name: 'Discharge L2 Review',
     icon: CheckCircle,
-    color: 'green',
-    description: 'Initial authorization and approval process'
+    color: 'purple',
+    description: 'Second level review and final approval'
+  },
+  {
+    id: 'discharge-l1',
+    name: 'Discharge L1 Review',
+    icon: CheckCircle,
+    color: 'yellow',
+    description: 'First level review after patient discharge'
   },
   {
     id: 'discharge-preprocessing',
@@ -403,30 +409,24 @@ const claimStages = [
     isEyther: true
   },
   {
-    id: 'discharge-l1',
-    name: 'Discharge L1 Review',
+    id: 'pre-auth',
+    name: 'Pre-auth',
     icon: CheckCircle,
-    color: 'yellow',
-    description: 'First level review after patient discharge'
-  },
-  {
-    id: 'discharge-l2',
-    name: 'Discharge L2 Review',
-    icon: CheckCircle,
-    color: 'purple',
-    description: 'Second level review and final approval'
-  },
-  {
-    id: 'payment',
-    name: 'Payment Stage',
-    icon: CreditCard,
     color: 'green',
-    description: 'Payment processing and completion'
+    description: 'Initial authorization and approval process'
+  },
+  {
+    id: 'pre-auth-preprocessing',
+    name: 'Pre-auth Preprocessing by Eyther',
+    icon: CheckCircle,
+    color: 'green',
+    description: 'Initial verification and processing by Eyther',
+    isEyther: true
   }
 ];
 
 export function ClaimJourneyStages() {
-  const [expandedStage, setExpandedStage] = useState<string | null>('pre-auth');
+  const [expandedStage, setExpandedStage] = useState<string | null>('payment');
   const [selectedEvent, setSelectedEvent] = useState<TimelineEvent | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPreprocessed, setIsPreprocessed] = useState(true);
@@ -726,13 +726,13 @@ export function ClaimJourneyStages() {
                       {/* Expanded timeline events */}
                       {isExpanded && stageEvents.length > 0 && (
                         <div className="mt-4 ml-14">
-                          {stageEvents.map((event, eventIndex) => (
+                          {[...stageEvents].reverse().map((event, eventIndex) => (
                             <div
                               key={event.id}
                               className="relative"
                             >
                               {/* Line connecting to next event */}
-                              {eventIndex < stageEvents.length - 1 && (
+                              {eventIndex < [...stageEvents].reverse().length - 1 && (
                                 <div 
                                   className="absolute left-6 top-14 w-0.5 bg-border/40"
                                   style={{ height: 'calc(100% - 2rem)' }}

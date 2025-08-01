@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, CheckCircle, Clock, AlertCircle, MessageSquare, FileText, CreditCard, ChevronRight, User, Building2, Activity, Package, Calendar, TrendingUp } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Clock, AlertCircle, MessageSquare, FileText, CreditCard, ChevronRight, User, Building2, Activity, Package, Calendar, TrendingUp, Shield } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -73,7 +73,7 @@ const timelineEventsByStage: Record<string, TimelineEvent[]> = {
       actor: 'Eyther Analyst',
       status: 'QUERY_BY_EYTHER',
       details: 'Additional patient history and diagnostic reports requested for pre-auth evaluation.',
-      icon: 'HelpCircle',
+      icon: 'AlertCircle',
       iconColor: 'yellow',
       query: {
         reason: 'Incomplete patient history',
@@ -93,7 +93,7 @@ const timelineEventsByStage: Record<string, TimelineEvent[]> = {
       status: 'QUERY_REPLIED',
       details: 'Hospital submitted all requested documents. Query marked as resolved.',
       icon: 'MessageSquare',
-      iconColor: 'blue',
+      iconColor: 'primary',
       response: 'All requested documents uploaded: Previous cardiac history (none), ECG report dated 31/01/2025, Angiography recommendation from Dr. Sharma.'
     },
     {
@@ -179,7 +179,7 @@ const timelineEventsByStage: Record<string, TimelineEvent[]> = {
       actor: 'Eyther Analyst',
       status: 'DISCHARGE_QUERY_BY_EYTHER',
       details: 'Missing discharge summary details and itemized bill breakdown requested.',
-      icon: 'HelpCircle',
+      icon: 'AlertCircle',
       iconColor: 'yellow',
       query: {
         reason: 'Incomplete discharge documentation',
@@ -199,7 +199,7 @@ const timelineEventsByStage: Record<string, TimelineEvent[]> = {
       status: 'DISCHARGE_QUERY_REPLIED',
       details: 'Hospital submitted all requested discharge documents promptly.',
       icon: 'MessageSquare',
-      iconColor: 'blue',
+      iconColor: 'primary',
       response: 'Updated discharge summary with complete medication list, detailed itemized bill, and post-operative notes uploaded.'
     },
     {
@@ -232,7 +232,7 @@ const timelineEventsByStage: Record<string, TimelineEvent[]> = {
       status: 'PENDING_L1',
       details: 'Post-treatment claim documents submitted successfully. Claim entered into L1 analyst review queue for initial assessment.',
       icon: 'FileText',
-      iconColor: 'yellow',
+      iconColor: 'blue',
       documents: ['Discharge Summary', 'Final Bill', 'Treatment Records', 'Pre-auth approval copy']
     },
     {
@@ -242,8 +242,8 @@ const timelineEventsByStage: Record<string, TimelineEvent[]> = {
       actor: 'TPA L1 Analyst',
       status: 'QUERY_RAISED',
       details: 'L1 Analyst identified missing critical documentation required for claim approval. Claim put on hold pending document submission.',
-      icon: 'HelpCircle',
-      iconColor: 'blue',
+      icon: 'AlertCircle',
+      iconColor: 'yellow',
       query: {
         reason: 'Incomplete documentation - Missing operative notes and supporting invoices',
         requirements: [
@@ -264,7 +264,7 @@ const timelineEventsByStage: Record<string, TimelineEvent[]> = {
       status: 'QUERY_REPLIED',
       details: 'Hospital submitted all requested documents within extended deadline. Query marked as resolved by hospital.',
       icon: 'MessageSquare',
-      iconColor: 'blue',
+      iconColor: 'primary',
       response: 'All requested documents uploaded: OT notes with timestamps (In: 11:30 AM, Out: 1:45 PM), post stent flow report showing 100% patency, blocks documentation, sealed ECG report dated 03/02/2025, and detailed stent invoice with batch numbers.'
     },
     {
@@ -328,7 +328,7 @@ const timelineEventsByStage: Record<string, TimelineEvent[]> = {
       actor: 'Finance Manager',
       status: 'CLAIM_PAID',
       details: 'Payment of ₹85,000 approved by finance manager. Amount queued for NEFT transfer in next batch.',
-      icon: 'CheckCircle',
+      icon: 'CreditCard',
       iconColor: 'green',
       payment: {
         amount: '₹85,000',
@@ -343,7 +343,7 @@ const timelineEventsByStage: Record<string, TimelineEvent[]> = {
       actor: 'System',
       status: 'CLAIM_PACKAGE_APPROVED_AND_PAID',
       details: 'Payment of ₹85,000 processed successfully via NEFT. Transaction reference: NEFT/2025/02/24/TXN1234567. Hospital account credited.',
-      icon: 'DollarSign',
+      icon: 'CreditCard',
       iconColor: 'green',
       payment: {
         amount: '₹85,000',
@@ -382,35 +382,37 @@ const claimStages = [
   {
     id: 'pre-auth-preprocessing',
     name: 'Pre-auth Preprocessing by Eyther',
-    icon: Activity,
-    color: 'indigo',
-    description: 'Initial verification and processing by Eyther'
+    icon: CheckCircle,
+    color: 'green',
+    description: 'Initial verification and processing by Eyther',
+    isEyther: true
   },
   {
     id: 'pre-auth',
     name: 'Pre-auth',
-    icon: FileText,
-    color: 'blue',
+    icon: CheckCircle,
+    color: 'green',
     description: 'Initial authorization and approval process'
   },
   {
     id: 'discharge-preprocessing',
     name: 'Discharge Preprocessing by Eyther',
-    icon: Activity,
-    color: 'indigo',
-    description: 'Post-discharge verification by Eyther'
+    icon: CheckCircle,
+    color: 'green',
+    description: 'Post-discharge verification by Eyther',
+    isEyther: true
   },
   {
     id: 'discharge-l1',
     name: 'Discharge L1 Review',
-    icon: Clock,
+    icon: CheckCircle,
     color: 'yellow',
     description: 'First level review after patient discharge'
   },
   {
     id: 'discharge-l2',
     name: 'Discharge L2 Review',
-    icon: AlertCircle,
+    icon: CheckCircle,
     color: 'purple',
     description: 'Second level review and final approval'
   },
@@ -490,14 +492,18 @@ export function ClaimJourneyStages() {
         return <CheckCircle {...iconProps} />;
       case 'FileText':
         return <FileText {...iconProps} />;
-      case 'HelpCircle':
+      case 'AlertCircle':
         return <AlertCircle {...iconProps} />;
       case 'MessageSquare':
         return <MessageSquare {...iconProps} />;
       case 'Clock':
         return <Clock {...iconProps} />;
-      case 'DollarSign':
+      case 'CreditCard':
         return <CreditCard {...iconProps} />;
+      case 'Building2':
+        return <Building2 {...iconProps} />;
+      case 'Shield':
+        return <Shield {...iconProps} />;
       default:
         return <Activity {...iconProps} />;
     }
@@ -510,7 +516,7 @@ export function ClaimJourneyStages() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto p-4 max-w-7xl">
+      <div className="container mx-auto p-6 pb-12 max-w-7xl">
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -521,7 +527,7 @@ export function ClaimJourneyStages() {
               <div className="flex items-center gap-3 mb-1">
                 <h1 className="text-2xl font-semibold text-foreground">Claim Journey</h1>
                 {isPreprocessed ? (
-                  <Badge className="bg-indigo-100 text-indigo-700 border-indigo-200 hover:bg-indigo-100">
+                  <Badge className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/10">
                     <CheckCircle className="h-3 w-3 mr-1" />
                     Preprocessed by Eyther
                   </Badge>
@@ -532,7 +538,6 @@ export function ClaimJourneyStages() {
                   </Badge>
                 )}
               </div>
-              <p className="text-sm text-muted-foreground">Track claim {mockClaimData.referenceId} across all stages</p>
             </div>
           </div>
           <Button 
@@ -546,9 +551,9 @@ export function ClaimJourneyStages() {
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-2 pt-4">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                 <Package className="h-4 w-4" />
                 Reference ID
@@ -561,7 +566,7 @@ export function ClaimJourneyStages() {
           </Card>
 
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-2 pt-4">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                 <Activity className="h-4 w-4" />
                 Current Status
@@ -577,7 +582,7 @@ export function ClaimJourneyStages() {
           </Card>
 
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-2 pt-4">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                 <CreditCard className="h-4 w-4" />
                 Claim Amount
@@ -599,7 +604,7 @@ export function ClaimJourneyStages() {
           </Card>
 
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-2 pt-4">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
                 Payment Date
@@ -626,97 +631,8 @@ export function ClaimJourneyStages() {
         )}
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* Left Panel - Detailed Information */}
-          <Card className="lg:col-span-1 border-border/50 shadow-sm">
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                <FileText className="h-5 w-5 text-primary" />
-                Complete Claim Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Patient Information */}
-              <div className="bg-muted/30 rounded-xl p-4">
-                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  Patient Details
-                </h3>
-                <div className="space-y-2">
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <span className="text-muted-foreground">Patient Name:</span>
-                    <span className="font-medium">{mockClaimData.patient.name}</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <span className="text-muted-foreground">Gender:</span>
-                    <span className="font-medium">{mockClaimData.patient.gender}</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <span className="text-muted-foreground">ID Type:</span>
-                    <span className="font-medium">{mockClaimData.patient.idType}</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <span className="text-muted-foreground">ID Number:</span>
-                    <span className="font-medium">{mockClaimData.patient.idNumber}</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <span className="text-muted-foreground">Mobile No:</span>
-                    <span className="font-medium">{mockClaimData.patient.mobileNo}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Hospital Information */}
-              <div className="bg-muted/30 rounded-xl p-4">
-                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-                  <Building2 className="h-4 w-4" />
-                  Hospital Details
-                </h3>
-                <div className="space-y-2">
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <span className="text-muted-foreground">Hospital Name:</span>
-                    <span className="font-medium">{mockClaimData.hospital.name}</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <span className="text-muted-foreground">NABH Accreditation:</span>
-                    <span className="font-medium">{mockClaimData.hospital.nabh ? 'Yes' : 'No'}</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <span className="text-muted-foreground">Care Department:</span>
-                    <span className="font-medium">{mockClaimData.hospital.department}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Treatment Information */}
-              <div className="bg-muted/30 rounded-xl p-4">
-                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-                  <Activity className="h-4 w-4" />
-                  Treatment Details
-                </h3>
-                <div className="space-y-2">
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <span className="text-muted-foreground">Date of Admission:</span>
-                    <span className="font-medium">{mockClaimData.treatment.admissionDate}</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <span className="text-muted-foreground">Date of Discharge:</span>
-                    <span className="font-medium">{mockClaimData.treatment.dischargeDate}</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <span className="text-muted-foreground">Length of Stay:</span>
-                    <span className="font-medium">{mockClaimData.treatment.lengthOfStay} days</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <span className="text-muted-foreground">Speciality Name:</span>
-                    <span className="font-medium">{mockClaimData.treatment.speciality}</span>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Right Panel - Stage-based Timeline */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+          {/* Left Panel - Stage-based Timeline */}
           <Card className="lg:col-span-2 border-border/50 shadow-sm">
             <CardHeader>
               <CardTitle className="text-lg font-semibold flex items-center gap-2">
@@ -725,7 +641,7 @@ export function ClaimJourneyStages() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {claimStages
                   .filter(stage => isPreprocessed || (!stage.id.includes('preprocessing')))
                   .map((stage) => {
@@ -739,12 +655,17 @@ export function ClaimJourneyStages() {
                       {/* Stage header */}
                       <div
                         className={cn(
-                          "relative flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition-all",
+                          "relative flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all overflow-hidden",
                           "hover:shadow-sm hover:border-primary/20",
-                          isExpanded && "border-primary/30 shadow-sm bg-muted/20"
+                          isExpanded && "border-primary/30 shadow-sm bg-muted/20",
+                          stage.isEyther && "border-primary/30"
                         )}
                         onClick={() => setExpandedStage(isExpanded ? null : stage.id)}
                       >
+                        {/* Eyther indicator */}
+                        {(stage as any).isEyther && (
+                          <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary" />
+                        )}
                         <div
                           className={cn(
                             "w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 relative z-10",
@@ -752,15 +673,22 @@ export function ClaimJourneyStages() {
                             progress === 'in-progress' && "bg-amber-50 text-amber-600 border-2 border-amber-200",
                             progress === 'error' && "bg-red-50 text-red-600 border-2 border-red-200",
                             progress === 'pending' && "bg-gray-50 text-gray-400 border-2 border-gray-200",
-                            stage.color === 'indigo' && progress === 'completed' && "bg-indigo-50 text-indigo-600 border-2 border-indigo-200",
-                            stage.color === 'indigo' && progress === 'in-progress' && "bg-indigo-50 text-indigo-600 border-2 border-indigo-200"
+                            stage.color === 'primary' && progress === 'completed' && "bg-primary/10 text-primary border-2 border-primary/20",
+                            stage.color === 'primary' && progress === 'in-progress' && "bg-primary/10 text-primary border-2 border-primary/20"
                           )}
                         >
                           <Icon className="h-5 w-5" />
                         </div>
 
                         <div className="flex-1">
-                          <h3 className="font-semibold text-base">{stage.name}</h3>
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-semibold text-base">{stage.name}</h3>
+                            {(stage as any).isEyther && (
+                              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 text-[10px] px-1.5 py-0">
+                                Powered by Eyther
+                              </Badge>
+                            )}
+                          </div>
                           <p className="text-sm text-muted-foreground">{stage.description}</p>
                           <p className="text-xs text-muted-foreground mt-1">
                             {stageEvents.length} event{stageEvents.length !== 1 ? 's' : ''} in this stage
@@ -797,7 +725,7 @@ export function ClaimJourneyStages() {
 
                       {/* Expanded timeline events */}
                       {isExpanded && stageEvents.length > 0 && (
-                        <div className="mt-4 ml-16">
+                        <div className="mt-4 ml-14">
                           {stageEvents.map((event, eventIndex) => (
                             <div
                               key={event.id}
@@ -807,14 +735,14 @@ export function ClaimJourneyStages() {
                               {eventIndex < stageEvents.length - 1 && (
                                 <div 
                                   className="absolute left-6 top-14 w-0.5 bg-border/40"
-                                  style={{ height: 'calc(100% - 1rem)' }}
+                                  style={{ height: 'calc(100% - 2rem)' }}
                                 />
                               )}
                               
                               <div
                                 className={cn(
                                   "relative flex gap-4 cursor-pointer hover:bg-muted/30 p-4 rounded-xl transition-all",
-                                  eventIndex < stageEvents.length - 1 ? "pb-8" : ""
+                                  eventIndex < stageEvents.length - 1 ? "mb-4" : ""
                                 )}
                                 onClick={() => handleEventClick(event)}
                               >
@@ -823,7 +751,8 @@ export function ClaimJourneyStages() {
                                     "w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 relative z-10",
                                     event.iconColor === 'green' && "bg-green-50 text-green-600 border-2 border-green-200",
                                     event.iconColor === 'yellow' && "bg-amber-50 text-amber-600 border-2 border-amber-200",
-                                    event.iconColor === 'blue' && "bg-blue-50 text-blue-600 border-2 border-blue-200",
+                                    event.iconColor === 'blue' && "bg-primary/10 text-primary border-2 border-primary/20",
+                                    event.iconColor === 'primary' && "bg-primary/10 text-primary border-2 border-primary/20",
                                     event.iconColor === 'red' && "bg-red-50 text-red-600 border-2 border-red-200",
                                     event.iconColor === 'purple' && "bg-purple-50 text-purple-600 border-2 border-purple-200"
                                   )}
@@ -837,9 +766,9 @@ export function ClaimJourneyStages() {
                                 
                                 {/* Package Status for relevant events */}
                                 {(event.status.includes('APPROVED') || event.status.includes('QUERY') || event.status.includes('PENDING')) && (
-                                  <div className="mt-3 space-y-2">
+                                  <div className="mt-3 space-y-1">
                                     <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Package Status:</p>
-                                    <div className="grid gap-2">
+                                    <div className="grid gap-1">
                                       {procedures.map((pkg, idx) => {
                                         // Simulate different statuses based on event type
                                         let pkgStatus = pkg.status;
@@ -894,12 +823,12 @@ export function ClaimJourneyStages() {
                                 )}
                                 
                                 {event.response && (
-                                  <div className="mt-3 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-                                    <p className="font-semibold text-sm text-blue-800 mb-1 flex items-center gap-2">
+                                  <div className="mt-3 p-4 bg-primary/10 border border-primary/20 rounded-xl">
+                                    <p className="font-semibold text-sm text-primary mb-1 flex items-center gap-2">
                                       <MessageSquare className="h-4 w-4" />
                                       Response:
                                     </p>
-                                    <p className="text-xs text-blue-700 ml-6">{event.response}</p>
+                                    <p className="text-xs text-primary/80 ml-6">{event.response}</p>
                                   </div>
                                 )}
 
@@ -925,6 +854,95 @@ export function ClaimJourneyStages() {
                     </div>
                   );
                 })}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Right Panel - Detailed Information */}
+          <Card className="lg:col-span-1 border-border/50 shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                <FileText className="h-5 w-5 text-primary" />
+                Complete Claim Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Patient Information */}
+              <div className="bg-muted/30 rounded-xl p-4">
+                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  Patient Details
+                </h3>
+                <div className="space-y-1.5">
+                  <div className="grid grid-cols-2 gap-1 text-sm">
+                    <span className="text-muted-foreground">Patient Name:</span>
+                    <span className="font-medium">{mockClaimData.patient.name}</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1 text-sm">
+                    <span className="text-muted-foreground">Gender:</span>
+                    <span className="font-medium">{mockClaimData.patient.gender}</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1 text-sm">
+                    <span className="text-muted-foreground">ID Type:</span>
+                    <span className="font-medium">{mockClaimData.patient.idType}</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1 text-sm">
+                    <span className="text-muted-foreground">ID Number:</span>
+                    <span className="font-medium">{mockClaimData.patient.idNumber}</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1 text-sm">
+                    <span className="text-muted-foreground">Mobile No:</span>
+                    <span className="font-medium">{mockClaimData.patient.mobileNo}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Hospital Information */}
+              <div className="bg-muted/30 rounded-xl p-4">
+                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
+                  <Building2 className="h-4 w-4" />
+                  Hospital Details
+                </h3>
+                <div className="space-y-1.5">
+                  <div className="grid grid-cols-2 gap-1 text-sm">
+                    <span className="text-muted-foreground">Hospital Name:</span>
+                    <span className="font-medium">{mockClaimData.hospital.name}</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1 text-sm">
+                    <span className="text-muted-foreground">NABH Accreditation:</span>
+                    <span className="font-medium">{mockClaimData.hospital.nabh ? 'Yes' : 'No'}</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1 text-sm">
+                    <span className="text-muted-foreground">Care Department:</span>
+                    <span className="font-medium">{mockClaimData.hospital.department}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Treatment Information */}
+              <div className="bg-muted/30 rounded-xl p-4">
+                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
+                  <Activity className="h-4 w-4" />
+                  Treatment Details
+                </h3>
+                <div className="space-y-1.5">
+                  <div className="grid grid-cols-2 gap-1 text-sm">
+                    <span className="text-muted-foreground">Date of Admission:</span>
+                    <span className="font-medium">{mockClaimData.treatment.admissionDate}</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1 text-sm">
+                    <span className="text-muted-foreground">Date of Discharge:</span>
+                    <span className="font-medium">{mockClaimData.treatment.dischargeDate}</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1 text-sm">
+                    <span className="text-muted-foreground">Length of Stay:</span>
+                    <span className="font-medium">{mockClaimData.treatment.lengthOfStay} days</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1 text-sm">
+                    <span className="text-muted-foreground">Speciality Name:</span>
+                    <span className="font-medium">{mockClaimData.treatment.speciality}</span>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -1174,7 +1192,7 @@ export function ClaimJourneyStages() {
               {selectedEvent.response && (
                 <div>
                   <p className="text-sm font-medium mb-2">Response Details:</p>
-                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                  <div className="p-4 bg-primary/10 border border-primary/20 rounded-xl">
                     <p className="text-sm">{selectedEvent.response}</p>
                   </div>
                 </div>

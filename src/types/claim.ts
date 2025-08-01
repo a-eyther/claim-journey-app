@@ -49,7 +49,7 @@ export interface TimelineEvent {
   status: string;
   details: string;
   icon: string;
-  iconColor: 'green' | 'yellow' | 'blue' | 'red' | 'purple';
+  iconColor: 'green' | 'yellow' | 'blue' | 'red' | 'purple' | 'primary';
   query?: {
     reason: string;
     requirements: string[];
